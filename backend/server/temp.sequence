@@ -1,0 +1,51 @@
+Funcion del modulo
+Crear el modulo permite separar "ambientes"
+1/Crea el modulo con el nombre este tiene un id y nombre y una pequena descripcion
+2/En el modulo puede agregar sesiones que por el momento esta vacia
+3/Una vez creadas las sesiones estas son visibles en modulo y estara asociada 1 a N 
+1 modulo puede tener varias sesiones
+
+Funcion de sesiones 
+Crea el modulo sesion permite agrupar sentencias
+1/Se crea una sesion con el nombre esta tiene un id y una pequena descripcion
+2/En sesion se puede agregar sentencias que por el momento esta vacia
+3/Una vez creadas las sentencias estas son visibles en sesion y estara asociada 1 a nombre
+1 session tiene varias sentencias
+
+Funcion de sentencias
+Crear el modulo sentencias permite crear enunciados a partir de tarjetas
+1/Al momento de crear sentencias se debera asociar a una sesion es decir se requiere por lo menos una session creada previamente
+2/La sentencia solo sera valida para una session es decir una relacion de 1 a 1
+una sentencia pertenece a una sesion
+3/Para crear la sentencia se requiere de tarjetas
+
+Funcion tarjetas
+Es la materia prima con la que se piensa trabajar, estas se agrupan de acuerdo a un topic
+las tarjetas solo son editables de la imagen audio video aux no del texto ni del topic ya que se puede prestar a errores
+en el armado de sentencias existentes.....
+Es posible cambiar de topic?
+
+
+Funcion de topic
+Quiero registrar los topics para tener el control de las tarjetas y no cargar todas a la vez
+Un topic se puede eliminar siempre y cuando no se utilice
+Los topic se requieren por modulo
+
+Modulo TEST
+Al momento de cargar el enunciado este debe de cargar tarjetas extra (si es que existen) dado el topic
+se cargan del topic del cual esta en la tarjeta maximo 4 por tarjeta es decir en cada enunciado puede haber un maximo de 16
+
+En la vista quiero tener una ventana para el registro de enunciados pero integrando modulos y sesiones para seleccionar en este orden
+Modules 
+Modulo(crear o seleccionar) -> Session(Seleccionar o crear y esta se adjuntara al modulo) en la misma vista
+Sentences
+En la vista quiero tener la posibilidad de crear sentencias a traves de las tarjetas
+Cards
+En la vista quiero tener el formulario para crear una tarjeta con los datos obligatorioa y opcionales
+Logs
+Solo seria una tabla de logs que se muestran al administrador
+TEST
+Se elige modulo sesion y carga el json con toda la prueba esta se compone de todos las cadenas de sus campos
+Ademas se debe de cargar las tarjetas por topic de un maximo de 4-5 para cada topic existente,
+La prueba se carga solo las imagenes el audio video y aux se carga bajo demanda de todas las tarjetas (en caso de que cuenten con el campo establecido)
+
