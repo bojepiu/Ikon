@@ -1,68 +1,78 @@
--- TOPIC SECTION
+use ikondb;
+
+DROP PROCEDURE IF EXISTS insert_topic;
+DROP PROCEDURE IF EXISTS update_topic;
+DROP PROCEDURE IF EXISTS delete_topic;
+DROP PROCEDURE IF EXISTS get_all_topics;
+DROP PROCEDURE IF EXISTS get_topic_by_id;
+
 -- Procedimiento para insertar un nuevo topic
+DELIMITER $$
 CREATE PROCEDURE insert_topic (
-  @name VARCHAR(255)
+  IN p_name VARCHAR(255),
+  OUT result VARCHAR(255)
 )
-AS
 BEGIN
   -- Validamos que no exista un topic con el mismo nombre
-  IF NOT EXISTS (SELECT * FROM topics WHERE name = @name)
-  BEGIN
-    INSERT INTO topics (name) VALUES (@name)
-  END
+  IF NOT EXISTS (SELECT * FROM topics WHERE name = p_name) THEN
+    INSERT INTO topics (name) VALUES (p_name);
+    SET result = 'SUCCESS';
   ELSE
-  BEGIN
-    RAISERROR('Already exists', 16, 1)
-  END
-END;
+    set result = 'ERROR';
+  END IF;
+END$$
+DELIMITER ;
+
 
 -- Procedimiento para actualizar un topic existente
+DELIMITER $$
 CREATE PROCEDURE update_topic (
-  @id INT,
-  @name VARCHAR(255)
+  IN p_id INT,
+  IN p_name VARCHAR(255),
+  OUT result VARCHAR(255)
 )
-AS
 BEGIN
-  IF NOT EXISTS (SELECT * FROM topics WHERE name = @name)
-  BEGIN
-    UPDATE topics SET name = @name WHERE id = @id
-  END
+  IF NOT EXISTS (SELECT * FROM topics WHERE name = @name) THEN
+    UPDATE topics SET name = p_name WHERE id = p_id;
+    SET result = "SUCCESS";
   ELSE
-  BEGIN
-    RAISERROR('Already exists', 16, 1)
-  END
-END;
+    set result = "ERROR";
+  END IF;
+END$$
+DELIMITER ;
 
 -- Procedimiento para eliminar un topic siempre y cuando este no se use en ningun lugar
+DELIMITER $$
 CREATE PROCEDURE delete_topic (
-  @id INT
+  IN p_id INT,
+  OUT result VARCHAR(255) 
 )
-AS
 BEGIN
     -- Validamos que no este asociado alguna card
-  IF NOT EXISTS (SELECT * FROM cards WHERE topic_id = @id)
-  BEGIN
-    DELETE FROM topics WHERE id = @id
-  END
+  IF NOT EXISTS (SELECT * FROM cards WHERE topic_id = @id) THEN
+    DELETE FROM topics WHERE id = p_id;
+    SET result = "SUCCESS";
   ELSE
-  BEGIN
-    RAISERROR('Topic is going used', 16, 1)
-  END
-END;
+    SET result = "ERROR";
+  END IF;
+END$$
+DELIMITER ;
 
 -- Procedimiento para obtener información de todos los topics
-CREATE PROCEDURE get_all_topics
-AS
+DELIMITER $$
+CREATE PROCEDURE get_all_topics()
 BEGIN
-  SELECT * FROM topics
-END;
+  SELECT * FROM topics;
+END$$
+DELIMITER ;
 
 -- Procedimiento para obtener información de un topic específico
+DELIMITER $$
 CREATE PROCEDURE get_topic_by_id (
-  @id INT
+  p_id INT
 )
-AS
 BEGIN
-  SELECT * FROM topics WHERE id = @id
-END;
---END TOPIC SECTION
+  SELECT * FROM topics WHERE id = p_id;
+END$$
+DELIMITER ;
+

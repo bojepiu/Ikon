@@ -6,65 +6,66 @@ DROP PROCEDURE IF EXISTS get_all_users;
 DROP PROCEDURE IF EXISTS get_user_by_id;
 
 -- Procedimiento para insertar un nuevo usuario
-CREATE PROCEDURE insert_user (
-  IN name VARCHAR(255),
-  IN email VARCHAR(255),
-  IN password VARCHAR(255),
-  IN role INT
-)
-AS
+DELIMITER $$
+CREATE PROCEDURE insert_user (IN p_name VARCHAR(255),IN p_email VARCHAR(255),IN p_password VARCHAR(255),IN p_role INT,OUT result VARCHAR(255))
 BEGIN
-  IF NOT EXISTS (SELECT * FROM users WHERE email = @email)
-  BEGIN
-    INSERT INTO users (name, email, password, role) VALUES (@name, @email, @password, @role)
-  END
+  IF NOT EXISTS (SELECT * FROM users WHERE email = p_email) THEN
+    INSERT INTO users (name, email, password, role) VALUES (p_name, p_email, p_password, p_role);
+    set result ='SUCCESS';
   ELSE
-  BEGIN
-    RAISERROR('Already user exists', 16, 1)
-  END
-END;
+    set result = 'ERROR';
+  END IF;
+END$$
+DELIMITER ;
 
 -- Procedimiento para actualizar un usuario existente
+DELIMITER $$
 CREATE PROCEDURE update_user (
-  @id INT,
-  @name VARCHAR(255),
-  @email VARCHAR(255),
-  @password VARCHAR(255) = NULL,
-  @role INT
+  IN p_id INT,
+  IN p_name VARCHAR(255),
+  IN p_email VARCHAR(255),
+  IN p_password VARCHAR(255),
+  IN p_role INT,
+  result VARCHAR(255)
 )
-AS
 BEGIN
-  IF (@password is NULL)
-  BEGIN
-    UPDATE users SET name = @name, email = @email, role = @role WHERE id = @id
-  END
+  IF (p_password = NULL ) THEN
+    UPDATE users SET name = p_name, email = p_email, role = p_role WHERE id = p_id;
+    set result ='SUCCESS';
   ELSE
-  BEGIN
-   UPDATE users SET name = @name, email = @email, password = @password WHERE id = @id
-  END
-END;
+    UPDATE users SET name = p_name, email = p_email, password = p_password WHERE id = p_id;
+    set result ='ERROR';
+  END IF;
+END$$
+DELIMITER ;
+
 
 -- Procedimiento para eliminar un usuario
+DELIMITER $$
 CREATE PROCEDURE delete_user (
-  @id INT
+  IN p_id INT,
+  result VARCHAR(255)
 )
-AS
 BEGIN
-  DELETE FROM users WHERE id = @id AND @id <> 'admin'
-END;
+  DELETE FROM users WHERE id = p_id AND p_id <> 'admin';
+  set result ='SUCCESS';
+END$$
+DELIMITER ;
 
 -- Procedimiento para obtener información de todos los usuarios menos el password
-CREATE PROCEDURE get_all_users
-AS
+DELIMITER $$
+CREATE PROCEDURE get_all_users()
 BEGIN
-  SELECT id,name,email,role FROM users
-END;
+  SELECT id,name,email,role FROM users;
+END$$
+DELIMITER ;
 
 -- Procedimiento para obtener información de un usuario específico
+DELIMITER $$
 CREATE PROCEDURE get_user_by_id (
-  @id INT
+  IN p_id INT
 )
-AS
 BEGIN
-  SELECT * FROM users WHERE id = @id
-END;
+  SELECT * FROM users WHERE id = p_id;
+END$$
+DELIMITER ;

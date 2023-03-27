@@ -1,1 +1,4 @@
 backend/database/db_volume
+*__pycache__*
+.env
+.vscode
