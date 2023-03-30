@@ -49,3 +49,6 @@ Se elige modulo sesion y carga el json con toda la prueba esta se compone de tod
 Ademas se debe de cargar las tarjetas por topic de un maximo de 4-5 para cada topic existente,
 La prueba se carga solo las imagenes el audio video y aux se carga bajo demanda de todas las tarjetas (en caso de que cuenten con el campo establecido)
 
+
+NOS pasamos a DEV
+
