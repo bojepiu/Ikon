@@ -24,22 +24,10 @@ def init_connection():
         print(str(e))
         return 'ERROR'
 
-CONNECTION=init_connection()
-
-def validate_user_pass(user,pwd):
+def close_connection(connection):
     try:
-        if(CONNECTION == 'ERROR'):
-            return 'DATABASE_ERROR'
-        cursor=CONNECTION.cursor()
-        cursor.callproc('validate_user',('admin','admin'))
-        x=cursor.stored_results()
-        for i in x:
-            result=i.fetchall()
-        print(result)
-       
+        connection.close()
+        return "CLOSED"
     except Exception as e:
         print(str(e))
-        return 'DATABASE_ERROR'
-
-validate_user_pass('admin','admin')
-CONNECTION.close()
+        return "ERROR"

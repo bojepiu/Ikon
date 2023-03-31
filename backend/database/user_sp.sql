@@ -4,6 +4,8 @@ DROP PROCEDURE IF EXISTS update_user;
 DROP PROCEDURE IF EXISTS delete_user;
 DROP PROCEDURE IF EXISTS get_all_users;
 DROP PROCEDURE IF EXISTS get_user_by_id;
+DROP PROCEDURE IF EXISTS validate_user;
+
 
 -- Procedimiento para insertar un nuevo usuario
 DELIMITER $$
@@ -11,9 +13,10 @@ CREATE PROCEDURE insert_user (IN p_name VARCHAR(255),IN p_email VARCHAR(255),IN 
 BEGIN
   IF NOT EXISTS (SELECT * FROM users WHERE email = p_email) THEN
     INSERT INTO users (name, email, password, role) VALUES (p_name, p_email, p_password, p_role);
+    COMMIT;
     set result ='SUCCESS';
   ELSE
-    set result = 'ERROR';
+    set result = 'ALREADY_EXISTS';
   END IF;
 END$$
 DELIMITER ;
@@ -26,15 +29,17 @@ CREATE PROCEDURE update_user (
   IN p_email VARCHAR(255),
   IN p_password VARCHAR(255),
   IN p_role INT,
-  result VARCHAR(255)
+  OUT result VARCHAR(255)
 )
 BEGIN
   IF (p_password = NULL ) THEN
     UPDATE users SET name = p_name, email = p_email, role = p_role WHERE id = p_id;
+    COMMIT;
     set result ='SUCCESS';
   ELSE
     UPDATE users SET name = p_name, email = p_email, password = p_password WHERE id = p_id;
-    set result ='ERROR';
+    COMMIT;
+    set result ='SUCCESS';
   END IF;
 END$$
 DELIMITER ;
@@ -44,10 +49,11 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE delete_user (
   IN p_id INT,
-  result VARCHAR(255)
+  OUT result VARCHAR(255)
 )
 BEGIN
-  DELETE FROM users WHERE id = p_id AND p_id <> 'admin';
+  DELETE FROM users WHERE id = p_id AND name <> 'admin';
+  COMMIT;
   set result ='SUCCESS';
 END$$
 DELIMITER ;
@@ -69,3 +75,14 @@ BEGIN
   SELECT * FROM users WHERE id = p_id;
 END$$
 DELIMITER ;
+
+-- Procedimiento para obtener información de un usuario específico
+DELIMITER $$
+CREATE PROCEDURE validate_user (
+  IN p_name VARCHAR(255),
+  IN p_password VARCHAR(255)
+)
+BEGIN
+  SELECT name,email,role FROM users WHERE name = p_name and password=p_password;
+END$$
+DELIMITER ; 
