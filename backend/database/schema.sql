@@ -18,16 +18,18 @@ CREATE TABLE users (
 
 -- Crear la tabla modules
 CREATE TABLE modules (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   description TEXT
 );
 
 -- Crear la tabla sessions
 CREATE TABLE sessions (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  module_id INT NOT NULL,
   name VARCHAR(255) NOT NULL,
-  description TEXT
+  description TEXT,
+  FOREIGN KEY(module_id) REFERENCES modules(id)
 );
 
 -- Crear la tabla topics
@@ -49,13 +51,17 @@ CREATE TABLE cards (
 );
 
 -- Crear la tabla sentences
+-- Sentence order es un csv de id's de cards
 CREATE TABLE sentences (
   id INT PRIMARY KEY AUTO_INCREMENT,
+  session_id INT NOT NULL,
   sentence_text VARCHAR(255) NOT NULL,
+  sentence_order VARCHAR(255) NOT NULL,
   sentence_image VARCHAR(255) NOT NULL,
   sentence_audio VARCHAR(255) NOT NULL,
   sentence_video VARCHAR(255) NOT NULL,
-  sentence_aux_image VARCHAR(255) NOT NULL
+  sentence_aux_image VARCHAR(255) NOT NULL,
+  FOREIGN KEY (session_id) REFERENCES sessions(id)
 );
 
 -- Relacion session-module
@@ -102,4 +108,4 @@ CREATE TABLE log (
 );
 
 -- Initialized with default user
-INSERT INTO users values("admin","admin@ikons.com","admin",1)
+INSERT INTO users values(null,"admin","admin@ikons.com","admin",1);

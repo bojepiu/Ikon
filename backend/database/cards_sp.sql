@@ -1,74 +1,99 @@
 -- BEGIN SECTION CARDS
+USE ikondb;
+DROP PROCEDURE IF EXISTS insert_card;
+DROP PROCEDURE IF EXISTS update_card;
+DROP PROCEDURE IF EXISTS delete_card;
+DROP PROCEDURE IF EXISTS get_all_cards;
+DROP PROCEDURE IF EXISTS get_card_by_id;
+DROP PROCEDURE IF EXISTS get_cards_by_topic;
+
+
 
 -- Procedimiento para insertar una nueva tarjeta
+DELIMITER $$
 CREATE PROCEDURE insert_card (
-  @topic_id INT,
-  @card_text VARCHAR(255),
-  @card_image VARCHAR(255),
-  @card_audio VARCHAR(255),
-  @card_video VARCHAR(255),
-  @card_aux_image VARCHAR(255)
+  IN p_topic_id INT,
+  IN p_card_text VARCHAR(255),
+  IN p_card_image VARCHAR(255),
+  IN p_card_audio VARCHAR(255),
+  IN p_card_video VARCHAR(255),
+  IN p_card_aux_image VARCHAR(255),
+  OUT result VARCHAR(255)
 )
-AS
 BEGIN
-  IF EXISTS (SELECT * FROM topics as t, cards as c WHERE t.id = @topic_id and c.card_text  = @card_text)
-  BEGIN
-    RAISERROR('The card already exists', 16, 1)
-  END
+  IF EXISTS(SELECT * FROM  cards as c WHERE c.topic_id = p_topic_id and c.card_text = p_card_text ) THEN
+    set result="DUPLICATED";
   ELSE
-  BEGIN
-   INSERT INTO cards (topic_id,card_text,card_image,card_audio,card_video,card_aux_image) VALUES (@topic_id,@card_text,@card_image,@card_audio,@card_video,@card_aux_image)
-  END
-END;
+   INSERT INTO cards (topic_id,card_text,card_image,card_audio,card_video,card_aux_image) VALUES (p_topic_id,p_card_text,p_card_image,p_card_audio,p_card_video,p_card_aux_image);
+   COMMIT;
+   set result="SUCCESS";
+  END IF;
+END $$
+DELIMITER ;
 
 -- Procedimiento para actualizar una tarjeta existente
+DELIMITER $$
 CREATE PROCEDURE update_card (
-  @id INT,
-  @topic_id INT,
-  @card_text VARCHAR(255),
-  @card_image VARCHAR(255),
-  @card_audio VARCHAR(255),
-  @card_video VARCHAR(255),
-  @card_aux_image VARCHAR(255)
+  IN p_id INT,
+  IN p_topic_id INT,
+  IN p_card_text VARCHAR(255),
+  IN p_card_image VARCHAR(255),
+  IN p_card_audio VARCHAR(255),
+  IN p_card_video VARCHAR(255),
+  IN p_card_aux_image VARCHAR(255),
+  OUT result VARCHAR(255)
 )
-AS
 BEGIN
-  IF NOT EXISTS (SELECT * FROM topics as t, cards as c WHERE t.id = @topic_id and c.card_text = @card_text and c.id <> @id)
-  BEGIN
-   UPDATE cards SET topic_id = @topic_id, card_text = @card_text, card_image = @card_image, card_audio = @card_audio, card_video = @card_video, card_aux_image = @card_aux_image WHERE id = @id
-  END
+  IF NOT EXISTS (SELECT * FROM topics as t, cards as c WHERE t.id = p_topic_id and c.card_text = p_card_text and c.id <> p_id) THEN
+    UPDATE cards SET topic_id = p_topic_id, card_text = p_card_text, card_image = p_card_image, card_audio = p_card_audio, card_video = p_card_video, card_aux_image = p_card_aux_image WHERE id = p_id;
+    COMMIT;
+    SET result="SUCCESS";
   ELSE
-  BEGIN
-   RAISERROR('The card already exists', 16, 1)
-  END
-END;
+    SET result="DUPLICATED";
+  END IF;
+END $$
+DELIMITER ;
 
 -- Procedimiento para eliminar una tarjeta
+DELIMITER $$
 CREATE PROCEDURE delete_card (
-  @id INT
+  IN p_id INT,
+  OUT result VARCHAR(255)
 )
-AS
 BEGIN
-  IF NOT EXISTS (SELECT * FROM cards_sentences WHERE card_id = @id)
-  BEGIN
-    DELETE FROM cards WHERE id = @id
-  END
+  IF NOT EXISTS (SELECT * FROM cards_sentences WHERE card_id = p_id) THEN
+    DELETE FROM cards WHERE id = p_id;
+    COMMIT;
+    SET result= "SUCCESS";
   ELSE
-  BEGIN
-    RAISERROR('The card is in use', 16, 1)
-  END
-END;
+    SET result="USED";
+  END IF;
+END $$
+DELIMITER ;
 
 -- Procedimiento para obtener información de todas las tarjetas
-CREATE PROCEDURE get_all_cards
-AS
+DELIMITER $$
+CREATE PROCEDURE get_all_cards()
 BEGIN
-  SELECT * FROM cards
-END;
+  SELECT * FROM cards;
+END $$
+DELIMITER ;
 
 -- Procedimiento para obtener información de una tarjeta específica
+DELIMITER $$
 CREATE PROCEDURE get_card_by_id (
-  @id INT
+  IN p_id INT
 )
-AS
+BEGIN
+  SELECT * FROM cards WHERE id=p_id;
+END $$
+DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE get_cards_by_topic (
+  IN p_topic_id INT
+)
+BEGIN
+  SELECT * FROM cards WHERE topic_id=p_topic_id;
+END $$
+DELIMITER ;

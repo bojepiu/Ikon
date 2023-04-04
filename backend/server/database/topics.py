@@ -43,7 +43,10 @@ def delete_topic(id):
         print(str(e))
         return 'ERROR'
 
-# get_all_topics()
+
+# insert_topic('first_topic')
+# insert_topic('second_topic')
 # insert_topic('third_topic')
+get_all_topics()
 # update_topic(2,'second_topic')
 # delete_topic(3)
