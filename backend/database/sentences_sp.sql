@@ -30,11 +30,11 @@ BEGIN
     LOOP
         SET strLen = LENGTH(p_sentence_order);
         IF NOT EXISTS (SELECT id FROM cards WHERE id = SUBSTRING_INDEX(p_sentence_order, ',', 1)) THEN
-            SET result=p_senten_order;
+            SET result=p_sentence_order;
         END IF;
-        SET SubStrLen = LENGTH(SUBSTRING_INDEX(p_sentence_order, ',', 1))+1;
-        SET p_sentence_order = MID(p_sentence_order, SubStrLen, strLen);
-        IF p_sentence_order = NULL THEN
+        SET SubStrLen = LENGTH(SUBSTRING_INDEX(p_sentence_order, ',', 1));
+        SET p_sentence_order = MID(p_sentence_order, SubStrLen+1, strLen);
+        IF p_sentence_order = "" THEN
             LEAVE do_this;
         END IF;
     END LOOP do_this;
