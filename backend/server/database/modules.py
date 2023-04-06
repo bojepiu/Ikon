@@ -23,9 +23,31 @@ def insert_module(name,description):
     except Exception as e:
         print(str(e))
         return 'ERROR'
+
+def update_module(module_id,name,description):
+    try:
+        cursor=CONNECTION.cursor()
+        output=cursor.callproc('update_module',(module_id,name,description,''))
+        print(output)
+        return 'OK'
+    except Exception as e:
+        print(str(e))
+        return 'ERROR'
+
+def delete_module(module_id):
+    try:
+        cursor=CONNECTION.cursor()
+        output=cursor.callproc('delete_module',(module_id,''))
+        print(output)
+        return 'OK'
+    except Exception as e:
+        print(str(e))
+        return 'ERROR'
     
 
     
 
-insert_module('Modulo1','Modulo para eliminar y una breve descripcion')
+# insert_module('Modulo1','Modulo para eliminar y una breve descripcion')
+# update_module(1,'Modulo2','Modulo para eliminar y modificado')
+delete_module(3)
 get_all_modules()
