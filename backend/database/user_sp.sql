@@ -11,7 +11,7 @@ DROP PROCEDURE IF EXISTS validate_user;
 DELIMITER $$
 CREATE PROCEDURE insert_user (IN p_name VARCHAR(255),IN p_email VARCHAR(255),IN p_password VARCHAR(255),IN p_role INT,OUT result VARCHAR(255))
 BEGIN
-  IF NOT EXISTS (SELECT * FROM users WHERE email = p_email) THEN
+  IF NOT EXISTS (SELECT * FROM users WHERE email = p_email or name = p_name) THEN
     INSERT INTO users (name, email, password, role) VALUES (p_name, p_email, p_password, p_role);
     COMMIT;
     set result ='SUCCESS';
@@ -32,14 +32,18 @@ CREATE PROCEDURE update_user (
   OUT result VARCHAR(255)
 )
 BEGIN
-  IF (p_password = NULL ) THEN
-    UPDATE users SET name = p_name, email = p_email, role = p_role WHERE id = p_id;
-    COMMIT;
-    set result ='SUCCESS';
+  IF NOT EXISTS (SELECT * FROM users WHERE (email = p_email or name = p_name) and id <> p_id ) THEN
+    IF (p_password = "" ) THEN
+      UPDATE users SET name = p_name, email = p_email, role = p_role WHERE id = p_id;
+      COMMIT;
+      set result ='SUCCESS';
+    ELSE
+      UPDATE users SET name = p_name, email = p_email, password = p_password,  role = p_role WHERE id = p_id;
+      COMMIT;
+      set result ='SUCCESS';
+    END IF;
   ELSE
-    UPDATE users SET name = p_name, email = p_email, password = p_password WHERE id = p_id;
-    COMMIT;
-    set result ='SUCCESS';
+    set result = 'ALREADY_EXISTS';
   END IF;
 END$$
 DELIMITER ;
