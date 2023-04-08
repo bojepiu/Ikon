@@ -23,8 +23,10 @@ CREATE PROCEDURE insert_sentence (
 proc_insert:BEGIN
   DECLARE strLen    INT DEFAULT 0;
   DECLARE SubStrLen    INT DEFAULT 0;
+  DECLARE aux_sentence_order VARCHAR(255) DEFAULT p_sentence_order;
   SET result = 'init';
   SET p_sentence_order=CONCAT(p_sentence_order,",");
+
   IF EXISTS(SELECT * FROM  sentences as s WHERE s.session_id = p_session_id and s.sentence_text = p_sentence_text ) THEN
     set result="DUPLICATED";
   ELSE
@@ -42,7 +44,7 @@ proc_insert:BEGIN
         END IF;
     END LOOP do_this;
     IF result = "init" THEN
-      INSERT INTO sentences (session_id,sentence_text,sentence_order,sentence_image,sentence_audio,sentence_video,sentence_aux_image) VALUES (p_session_id,p_sentence_text,p_sentence_order,p_sentence_image,p_sentence_audio,p_sentence_video,p_sentence_aux_image);
+      INSERT INTO sentences (session_id,sentence_text,sentence_order,sentence_image,sentence_audio,sentence_video,sentence_aux_image) VALUES (p_session_id,p_sentence_text,aux_sentence_order,p_sentence_image,p_sentence_audio,p_sentence_video,p_sentence_aux_image);
       COMMIT;
        set result="SUCCESS";
     ELSE

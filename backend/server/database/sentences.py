@@ -59,7 +59,7 @@ def get_all_sentences():
 
 
 
-# insert_sentence(1,"t2 t1 t2 t1","2,1,3,2","imgenu2","audenu2","videoenu2","")
+insert_sentence(4,"t2 t2 text1","2,3,4","imgenu2","audenu2","videoenu2","")
 # update_sentence(1,1,"t1 t1 t2 t1","1,1,3,2","imgenu2","audenu2","videoenu2","xd2")
 # delete_sentence(1)
 get_sentences_by_session(1)

@@ -108,4 +108,4 @@ CREATE TABLE log (
 );
 
 -- Initialized with default user
-INSERT INTO users values(null,"admin","admin@ikons.com","admin",1);
+INSERT INTO users values(null,"admin","admin@ikons.com","adminadmin",1);

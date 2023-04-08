@@ -60,7 +60,7 @@ def get_sessions_by_module(module_id):
         return 'ERROR'
 
 
-# insert_session('session-1',1)
+# insert_session('session-1',4)
 # update_session(1,2,'other_name')
 # delete_session(2)
 # get_sessions_by_module(1)

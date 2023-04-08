@@ -1,13 +1,10 @@
 from flask import Blueprint
 from security.token import token_required
+from routes.topics import topic
+from routes.user import user
+from routes.cards import card
 
 api = Blueprint('/api', __name__)
-@token_required
-@api.route('/users')
-def users():
-    return "user"
-
-@api.route('/posts')
-@token_required
-def posts():
-    return "post"
+api.register_blueprint(topic,url_prefix='/topic')
+api.register_blueprint(user,url_prefix='/user')
+api.register_blueprint(card,url_prefix='/card')

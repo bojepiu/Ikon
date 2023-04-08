@@ -42,27 +42,25 @@ def token_required(f):
         return  f(current_user, *args, **kwargs)
     return decorated
 
-def get_token(user,pwd):
+def get_token(user,role):
     ##Validate user pwd
-    if(user=='asd'):
-        token = jwt.encode({
-            'role': 'user',
-            'user': user,
-            'exp' : datetime.utcnow() + timedelta(minutes = TIME_TOKEN)
-        }, os.getenv('SECRET_KEY'))
-        return token.decode('UTF-8')
-    else:
-        return 'error'
-
+    token = jwt.encode({
+        'role': role,
+        'user': user,
+        'exp' : datetime.utcnow() + timedelta(minutes = TIME_TOKEN)
+    }, os.getenv('SECRET_KEY'))
+    return token.decode('UTF-8')
+    
 def refresh_token(data):
     try:
         refresh=data['exp']
         user=data['user']
+        role=data['role']
         if(datetime.utcfromtimestamp(refresh) < datetime.utcnow()):
             return "EXPIRED"
         if datetime.utcnow() + timedelta(minutes=TIME_REFRESH_TOKEN) > datetime.utcfromtimestamp(refresh):
             return jwt.encode({
-                'role': 'user',
+                'role': role,
                 'user': user,
                 'exp' : datetime.utcnow() + timedelta(minutes = TIME_TOKEN)
             }, os.getenv('SECRET_KEY')).decode('UTF-8')

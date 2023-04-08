@@ -16,9 +16,10 @@ BEGIN
   -- Validamos que no exista un topic con el mismo nombre
   IF NOT EXISTS (SELECT * FROM topics WHERE name = p_name) THEN
     INSERT INTO topics (name) VALUES (p_name);
+    COMMIT;
     SET result = 'SUCCESS';
   ELSE
-    set result = 'ERROR';
+    set result = 'DUPLICATED';
   END IF;
 END$$
 DELIMITER ;
@@ -32,11 +33,12 @@ CREATE PROCEDURE update_topic (
   OUT result VARCHAR(255)
 )
 BEGIN
-  IF NOT EXISTS (SELECT * FROM topics WHERE name = @name) THEN
+  IF NOT EXISTS (SELECT * FROM topics WHERE name = p_name and id <> p_id) THEN
     UPDATE topics SET name = p_name WHERE id = p_id;
+    COMMIT;
     SET result = "SUCCESS";
   ELSE
-    set result = "ERROR";
+    set result = "DUPLICATED";
   END IF;
 END$$
 DELIMITER ;
@@ -49,11 +51,12 @@ CREATE PROCEDURE delete_topic (
 )
 BEGIN
     -- Validamos que no este asociado alguna card
-  IF NOT EXISTS (SELECT * FROM cards WHERE topic_id = @id) THEN
+  IF NOT EXISTS (SELECT * FROM cards WHERE topic_id = p_id) THEN
     DELETE FROM topics WHERE id = p_id;
+    COMMIT;
     SET result = "SUCCESS";
   ELSE
-    SET result = "ERROR";
+    SET result = "USED_TOPIC";
   END IF;
 END$$
 DELIMITER ;

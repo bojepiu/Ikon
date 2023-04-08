@@ -1,4 +1,4 @@
-import _init_ as DB
+import database._init_ as DB
 
 CONNECTION = DB.init_connection()
 
@@ -18,21 +18,19 @@ def insert_card(topic_id,text,image,audio,video,aux):
     try:
         cursor = CONNECTION.cursor()
         output=cursor.callproc('insert_card',(topic_id,text,image,audio,video,aux,''))
-        print(output)
-        return 'OK'
+        return output[6]
     except Exception as e:
         print(str(e))
         #ERROR 1452 topic not found
         if e.args[0]== 1452:
-            print('1452, TOPIC NOT FOUND')
+            return "TOPIC_NOT_FOUND"
         return 'ERROR'
 
 def update_card(id,topic_id,text,image,audio,video,aux):
     try:
         cursor=CONNECTION.cursor()
         output=cursor.callproc('update_card',(id,topic_id,text,image,audio,video,aux,''))
-        print(output)
-        return 'OK'
+        return output[7]
     except Exception as e:
         print(str(e))
         return 'ERROR'
@@ -42,8 +40,7 @@ def delete_card(id):
     try:
         cursor=CONNECTION.cursor()
         output=cursor.callproc('delete_card',(id,''))
-        print(output)
-        return 'OK'
+        return output[1]
     except Exception as e:
         return 'ERROR'
 
@@ -86,5 +83,5 @@ def get_cards_by_topic(topic_id):
 # update_card(20,3,t,img,aud,vid,aux)
 # delete_card(7)
 # delete_card(4)
-get_all_cards()
+# get_all_cards()
 # get_cards_by_topic(2)

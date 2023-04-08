@@ -5,14 +5,12 @@ import os
 
 #ROUTES
 from routes.api import  api
-from routes.user import user
 
 #INITIALIZED
 load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 app.register_blueprint(api, url_prefix='/api')
-app.register_blueprint(user, url_prefix='/user')
 
 @app.route("/")
 def index():
@@ -24,6 +22,7 @@ def index():
 @app.route("/about")
 def aboutl():
     return  jsonify({"message":"about"})
+
 
 if __name__ == '__main__':
     app.run(debug=True, 

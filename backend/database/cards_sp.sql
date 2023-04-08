@@ -44,7 +44,7 @@ CREATE PROCEDURE update_card (
   OUT result VARCHAR(255)
 )
 BEGIN
-  IF NOT EXISTS (SELECT * FROM topics as t, cards as c WHERE t.id = p_topic_id and c.card_text = p_card_text and c.id <> p_id) THEN
+  IF NOT EXISTS (SELECT * FROM cards WHERE topic_id = p_topic_id and card_text = p_card_text and id <> p_id) THEN
     UPDATE cards SET topic_id = p_topic_id, card_text = p_card_text, card_image = p_card_image, card_audio = p_card_audio, card_video = p_card_video, card_aux_image = p_card_aux_image WHERE id = p_id;
     COMMIT;
     SET result="SUCCESS";
