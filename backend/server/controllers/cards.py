@@ -48,7 +48,7 @@ def delete_card(id):
     result = db.delete_card(id)
     if  result == 'ERROR':
         return {"error":"database_error"}
-    if result == "USED_CARD":
+    if result == "USED":
         return {"error":"used_card"}
     return {"message":"card_deleted"}
 

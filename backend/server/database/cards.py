@@ -42,6 +42,7 @@ def delete_card(id):
         output=cursor.callproc('delete_card',(id,''))
         return output[1]
     except Exception as e:
+        print(str(e))
         return 'ERROR'
 
 
@@ -82,6 +83,6 @@ def get_cards_by_topic(topic_id):
 #insert_card(4,t,img,aud,vid,aux)
 # update_card(20,3,t,img,aud,vid,aux)
 # delete_card(7)
-# delete_card(4)
-# get_all_cards()
+# print(delete_card(1))
+#get_all_cards()
 # get_cards_by_topic(2)
