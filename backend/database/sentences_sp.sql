@@ -139,9 +139,9 @@ CREATE PROCEDURE delete_sentence (
   OUT result VARCHAR(255)
 )
 BEGIN
-    DELETE FROM sentences WHERE id = p_id;
-    COMMIT;
     DELETE FROM cards_sentences WHERE sentence_id=id;
+    COMMIT;
+    DELETE FROM sentences WHERE id = p_id;
     COMMIT;
     SET result = "SUCCESS";
 END$$

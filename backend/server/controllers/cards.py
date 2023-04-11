@@ -53,14 +53,16 @@ def delete_card(id):
     return {"message":"card_deleted"}
 
 
-def get_all_cards_by_topic():
-    result=db.get_cards_by_topic()
+def get_all_cards_by_topic(topic_id):
+    if not isinstance(topic_id,int):
+        return {"error":"bad_topic_id"}
+    result=db.get_cards_by_topic(topic_id)
     if result == "ERROR":
         return {"error":"error_database"}
     else:
         data={"cards":[],"total":len(result)}
         for topic in result:
-            data["cards"].append({"id":topic[0],"name":topic[1]})
+            data["cards"].append({"id":topic[0],"topic_id":topic[1],"text":topic[2],"image":topic[3],"audio":topic[4],"video":topic[5],"aux":topic[6]})
         return data
 
 # print(create_card('delete'))

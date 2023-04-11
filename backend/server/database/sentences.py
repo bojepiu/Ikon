@@ -1,4 +1,4 @@
-import _init_ as DB
+import database._init_ as DB
 
 CONNECTION=DB.init_connection()
 
@@ -7,7 +7,7 @@ def insert_sentence(session_id,text,order,image,audio,video,aux):
         cursor=CONNECTION.cursor()
         output=cursor.callproc('insert_sentence',(session_id,text,order,image,audio,video,aux,''))
         print(output)
-        return []
+        return output[7]
     except Exception as e:
         #1452 session doesn't exist
         print(str(e))
@@ -18,19 +18,18 @@ def update_sentence(sentence_id,session_id,text,order,image,audio,video,aux):
     try:
         cursor=CONNECTION.cursor()
         output=cursor.callproc('update_sentence',(sentence_id,session_id,text,order,image,audio,video,aux,''))
-        print(output)
-        return 'ok'
+        return output[8]
     except Exception as e:
-        return 'fail'
+        return 'ERROR'
     
 def delete_sentence(sentence_id):
     try:
         cursor=CONNECTION.cursor()
         output=cursor.callproc('delete_sentence',(sentence_id,''))
-        print(output)
-        return 'ok'
+        return output[1]
     except Exception as e:
-        return 'fail' 
+        print(str(e))
+        return 'ERROR' 
 
 def get_sentences_by_session(session_id):
     try:
@@ -39,11 +38,10 @@ def get_sentences_by_session(session_id):
         for i in cursor.stored_results():
             result=i.fetchall()
             print(result)
-            return result
-        return 'ok'
+        return result
     except Exception as e:
         print(str(e))
-        return 'fail'
+        return "ERROR"
     
 def get_all_sentences():
     try:
@@ -51,9 +49,7 @@ def get_all_sentences():
         cursor.callproc('get_all_sentences')
         for i in cursor.stored_results():
             result=i.fetchall()
-            print(result)
             return result
-        return []
     except Exception as e:
         return 'ERROR'
 

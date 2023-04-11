@@ -8,7 +8,6 @@ def get_all_cards():
         cursor.callproc('get_all_cards')
         for i in cursor.stored_results():
             result=i.fetchall()
-            print(result)
             return result
         return []
     except Exception as e:
@@ -35,7 +34,6 @@ def update_card(id,topic_id,text,image,audio,video,aux):
         print(str(e))
         return 'ERROR'
 
-#PENDIENTE VALIDAR QUE NO SE PUEDA BORRAR SI ESTA SIENDO USADA
 def delete_card(id):
     try:
         cursor=CONNECTION.cursor()
@@ -45,8 +43,6 @@ def delete_card(id):
         print(str(e))
         return 'ERROR'
 
-
-##SECTION ASSOCIATION
 def get_cards_by_topic(topic_id):
     try:
         cursor=CONNECTION.cursor()
@@ -56,7 +52,7 @@ def get_cards_by_topic(topic_id):
         for i in x:
             result=i.fetchall()
         print(result)
-        return 'OK'
+        return result
     except Exception as e:
         print(str(e))
         return 'ERROR'

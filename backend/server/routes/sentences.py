@@ -1,17 +1,19 @@
 from flask import Blueprint,request,jsonify
 from security.token import token_required
-from controllers import cards as ctl
+from controllers import sentences as ctl
 
 #CONTEXT /card
-card = Blueprint('/card', __name__)
+sentence = Blueprint('/sentence', __name__)
 
-@card.route('/get_all')
+@sentence.route('/get_all',methods=["GET"])
 @token_required
-def get_all_cards(data):
+def get_all_sentences(data):
     try:
         if data["role"] != 1:
             return jsonify({"error":"role_forbidden"}),403
-        result=ctl.get_all_cards()
+        result=ctl.get_all_sentences()
+        if result.get('error'):
+            return jsonify(result),500
         if data.get('new_token'):
             result["new_token"]=data["new_token"]
             return jsonify(result),200
@@ -19,18 +21,19 @@ def get_all_cards(data):
     except Exception as e:
         return jsonify({"error":"bad_request","exception":str(e)}),400
 
-@card.route('/get_by_topic')
+@sentence.route('/get_by_session',methods=["GET"])
 @token_required
-def get_all_cards_by_topic(data):
+def get_all_sentences_by_session(data):
     try:
+        if data["role"] != 1:
+            return jsonify({"error":"role_forbidden"}),403
         js=request.get_json()
-        topic_id=js["topic_id"]
-        result=ctl.get_all_cards_by_topic(topic_id)
+        session_id=js["session_id"]
+        result=ctl.get_all_sentences_by_session(session_id)
         if result.get('error'):
             if result['error'] == "error_database":
                 return jsonify(result),500
-            else:
-                return jsonify(result),400
+            return jsonify(result),400
         if data.get('new_token'):
             result["new_token"]=data["new_token"]
             return jsonify(result),200
@@ -38,25 +41,27 @@ def get_all_cards_by_topic(data):
     except Exception as e:
         return jsonify({"error":"bad_request","exception":str(e)}),400
 
-@card.route('/create',methods=["POST"])
+@sentence.route('/create',methods=["POST"])
 @token_required
-def create_card(data):
+def create_sentence(data):
     try:
         if data["role"] != 1:
             return jsonify({"error":"role_forbidden"}),403
         js=request.get_json()
-        topic_id=js["topic_id"]
+        session_id=js["session_id"]
         text=js["text"]
+        order=js["order"]
         image=js["image"]
         audio=js["audio"]
         video=js["video"]
         aux=js["aux"]
-        result=ctl.create_card(topic_id,text,image,audio,video,aux)
+        result=ctl.create_sentence(session_id,text,order,image,audio,video,aux)
         if result.get('error'):
-            if result["error"]=='card_duplicated':
-                return jsonify(result),409
-            else:
+            if result["error"] == "error_database":
                 return jsonify(result),500
+            if result["error"] == "sentence_duplicated":
+                return jsonify(result),409
+            return jsonify(result),400
         if data.get('new_token'):
             result["new_token"]=data["new_token"]
             return jsonify(result),200
@@ -64,54 +69,51 @@ def create_card(data):
     except Exception as e:
         return jsonify({"error":"bad_request","exception":str(e)}),400
 
-@card.route("/update",methods=["POST"])
+@sentence.route('/update',methods=["POST"])
 @token_required
-def update_card(data):
+def update_sentence(data):
     try:
         if data["role"] != 1:
             return jsonify({"error":"role_forbidden"}),403
         js=request.get_json()
         id=js["id"]
-        topic_id=js["topic_id"]
+        session_id=js["session_id"]
         text=js["text"]
+        order=js["order"]
         image=js["image"]
         audio=js["audio"]
         video=js["video"]
         aux=js["aux"]
-        result = ctl.update_card(id,topic_id,text,image,audio,video,aux)
+        result=ctl.update_sentence(id,session_id,text,order,image,audio,video,aux)
         if result.get('error'):
-            if result["error"]=='update_failed':
+            if result["error"] == "error_database":
                 return jsonify(result),500
-            elif result["error"]=='card_duplicated':
-                 return jsonify(result),409
-            else:
-                return jsonify(result),400
+            if result["error"] == "sentence_duplicated":
+                return jsonify(result),409
+            return jsonify(result),400
         if data.get('new_token'):
             result["new_token"]=data["new_token"]
             return jsonify(result),200
         return jsonify(result),200
     except Exception as e:
         return jsonify({"error":"bad_request","exception":str(e)}),400
-    
-@card.route("/delete",methods=["DELETE"])
+
+@sentence.route('/delete',methods=["DELETE"])
 @token_required
-def delete_card(data):
+def delete_sentence(data):
     try:
         if data["role"] != 1:
             return jsonify({"error":"role_forbidden"}),403
         js=request.get_json()
         id=js["id"]
-        result = ctl.delete_card(id)
-        print(result)
+        result=ctl.delete_sentence(id)
         if result.get('error'):
-            if result["error"]=='used_card':
-                return jsonify(result),409
-            else:
+            if result['error'] == "error_database":
                 return jsonify(result),500
+            return jsonify(result),400
         if data.get('new_token'):
             result["new_token"]=data["new_token"]
-            return jsonify(result),204
-        return jsonify(result),204
+            return jsonify(result),200
+        return jsonify(result),200
     except Exception as e:
         return jsonify({"error":"bad_request","exception":str(e)}),400
-
