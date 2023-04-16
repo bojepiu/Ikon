@@ -1,9 +1,8 @@
 import database._init_ as DB
 
-CONNECTION=DB.init_connection()
-
 def get_all_topics():
     try:
+        CONNECTION=DB.init_connection()
         cursor=CONNECTION.cursor()
         cursor.callproc('get_all_topics')
         for i in cursor.stored_results():
@@ -12,37 +11,41 @@ def get_all_topics():
         return []
     except Exception as e:
         return 'ERROR'
+    finally:
+        CONNECTION.close()
 
 def insert_topic(name):
     try:
+        CONNECTION=DB.init_connection()
         cursor=CONNECTION.cursor()
         output=cursor.callproc('insert_topic',(name,''))
         return output[1]
     except Exception as e:
         print(str(e))
         return 'ERROR'
+    finally:
+        CONNECTION.close()
 
 def update_topic(id,name):
     try:
+        CONNECTION=DB.init_connection()
         cursor=CONNECTION.cursor()
         output=cursor.callproc('update_topic',(id,name,''))
         return output[2]
     except Exception as e:
         return 'ERROR'
+    finally:
+        CONNECTION.close()
 
 def delete_topic(id):
     try:
+        CONNECTION=DB.init_connection()
         cursor=CONNECTION.cursor()
         output=cursor.callproc('delete_topic',(id,''))
         return output[1]
     except Exception as e:
         print(str(e))
         return 'ERROR'
-
-
-# insert_topic('first_topic')
-# insert_topic('second_topic')
-# insert_topic('third_topic')
-# get_all_topics()
-# update_topic(2,'second_topic')
-# delete_topic(3)
+    finally:
+        CONNECTION.close()
+        

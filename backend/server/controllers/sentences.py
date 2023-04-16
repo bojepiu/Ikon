@@ -13,8 +13,11 @@ def create_sentence(session_id,text,order,image,audio,video,aux):
     # if not image.__contains__('http'):
     #     return {"error":"bad_image"}
     new_sentence=db.insert_sentence(session_id,text,order,image,audio,video,aux)
+    print(new_sentence)
     if new_sentence == 'DUPLICATED':
         return {"error":"sentence_duplicated"}
+    if new_sentence == 'SESSION_NOT_FOUND' or new_sentence == 'CARD_NOT_FOUND':
+        return {"error":new_sentence.lower()}
     if new_sentence == 'ERROR':
         return {"error":"error_database"}
     return {"message":"sentence_created"}
@@ -25,9 +28,10 @@ def  update_sentence(id,session_id,text,order,image,audio,video,aux):
     if not isinstance(session_id,int):
         return {"error":"bad_session_id"}
     up_sentence=db.update_sentence(id,session_id,text,order,image,audio,video,aux)
-    print(up_sentence)
     if up_sentence == 'DUPLICATED':
         return {"error":"sentence_duplicated"}
+    if up_sentence == 'BAD_ID':
+        return {"error":"sentence_id_not_found"}
     if up_sentence != "SUCCESS":
         return {"error":"update_failed"}
     return {"message":"sentence_updated"}

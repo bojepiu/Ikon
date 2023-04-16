@@ -57,10 +57,12 @@ def create_sentence(data):
         aux=js["aux"]
         result=ctl.create_sentence(session_id,text,order,image,audio,video,aux)
         if result.get('error'):
-            if result["error"] == "error_database":
-                return jsonify(result),500
             if result["error"] == "sentence_duplicated":
                 return jsonify(result),409
+            if result["error"] == "session_not_found":
+                return jsonify(result),400
+            if result["error"] == "error_database":
+                return jsonify(result),500
             return jsonify(result),400
         if data.get('new_token'):
             result["new_token"]=data["new_token"]
@@ -111,9 +113,6 @@ def delete_sentence(data):
             if result['error'] == "error_database":
                 return jsonify(result),500
             return jsonify(result),400
-        if data.get('new_token'):
-            result["new_token"]=data["new_token"]
-            return jsonify(result),200
-        return jsonify(result),200
+        return jsonify(result),204
     except Exception as e:
         return jsonify({"error":"bad_request","exception":str(e)}),400
