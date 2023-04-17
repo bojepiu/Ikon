@@ -53,7 +53,7 @@ def get_all_sentences():
     else:
         data={"sentences":[],"total":len(result)}
         for sentence in result:
-            data["sentences"].append({"id":sentence[0],"session_id":sentence[1],"text":sentence[2],"order":sentence[3],"image":sentence[3],"audio":sentence[4],"video":sentence[5],"aux":sentence[6]})
+            data["sentences"].append({"id":sentence[0],"session_id":sentence[1],"text":sentence[2],"order":sentence[3],"image":sentence[4],"audio":sentence[5],"video":sentence[6],"aux":sentence[7]})
         return data
 
 def get_all_sentences_by_session(session_id):

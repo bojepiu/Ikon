@@ -37,7 +37,8 @@ def update_session(id,module_id,name):
         print(output)
         return output[3]
     except Exception as e:
-        #1452 module not found
+        if e.args[0]== 1452:
+            return "MODULE_NOT_FOUND"
         print(str(e))
         return 'ERROR'
     finally:

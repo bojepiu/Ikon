@@ -50,13 +50,21 @@ def update_sentence(sentence_id,session_id,text,order,image,audio,video,aux):
         CONNECTION=DB.init_connection()
         cursor=CONNECTION.cursor()
         output=cursor.callproc('update_sentence',(sentence_id,session_id,text,order,image,audio,video,aux,''))
+        CONNECTION.close()
         print(output[8])
+        if output[8] == "SUCCESS":
+            for card_id in order.split(','):
+                result=insert_cards_sentences(card_id, sentence_id)
+                print(result)
+                if result !="SUCCESS":
+                    return result
         return output[8]
     except Exception as e:
         print(e)
         return 'ERROR'
     finally:
-        CONNECTION.close()
+        if(CONNECTION.is_connected()):
+            CONNECTION.close()
     
 def delete_sentence(sentence_id):
     try:

@@ -37,6 +37,8 @@ def update_card(id,topic_id,text,image,audio,video,aux):
         return output[7]
     except Exception as e:
         print(str(e))
+        if str(e).split(' ')[0]=='1452':
+            return "TOPIC_NOT_FOUND"
         return 'ERROR'
     finally:
         CONNECTION.close()

@@ -38,6 +38,8 @@ def  update_card(id,topic_id,text,image,audio,video,aux):
     print(up_card)
     if up_card == 'DUPLICATED':
         return {"error":"card_duplicated"}
+    if up_card == 'TOPIC_NOT_FOUND':
+        return {"error":up_card.lower()}
     if up_card != "SUCCESS":
         return {"error":"update_failed"}
     return {"message":"card_updated"}
