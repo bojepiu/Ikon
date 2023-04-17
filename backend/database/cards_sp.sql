@@ -31,7 +31,7 @@ BEGIN
 END $$
 DELIMITER ;
 
--- Procedimiento para actualizar una tarjeta existente
+-- Procedimiento para actualizar una tarjeta existente TODO:quitar el set del texto
 DELIMITER $$
 CREATE PROCEDURE update_card (
   IN p_id INT,
@@ -61,7 +61,7 @@ CREATE PROCEDURE delete_card (
   OUT result VARCHAR(255)
 )
 BEGIN
-  IF NOT EXISTS (SELECT * FROM cards_sentences WHERE card_id = p_id) THEN
+  IF NOT EXISTS (SELECT * FROM cards_sentences WHERE card_id_s = p_id) THEN
     DELETE FROM cards WHERE id = p_id;
     COMMIT;
     SET result= "SUCCESS";

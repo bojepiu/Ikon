@@ -77,9 +77,9 @@ CREATE TABLE session_module (
 -- Para obtener el orden correcto de la sentencia el select tiene que ser order by id
 CREATE TABLE cards_sentences (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  card_id INT NOT NULL,
+  card_id_s INT NOT NULL,
   sentence_id INT NOT NULL,
-  FOREIGN KEY (card_id) REFERENCES cards(id),
+  FOREIGN KEY (card_id_s) REFERENCES cards(id),
   FOREIGN KEY (sentence_id) REFERENCES sentences(id)
 );
 

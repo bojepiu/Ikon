@@ -22,7 +22,7 @@ BEGIN
     COMMIT;
     SET result = 'SUCCESS';
   ELSE
-    set result = 'ERROR';
+    set result = 'DUPLICATED';
   END IF;
 END$$
 DELIMITER ;
@@ -35,14 +35,22 @@ CREATE PROCEDURE update_session(
   IN p_name VARCHAR(255),
   OUT result VARCHAR(255)
 )
-BEGIN
+update_this:BEGIN
   -- Validamos que no exista session con el mismo nombre en el mismo modulo
+  IF NOT EXISTS (SELECT id from sessions where id=p_id) THEN
+    set result = "ID_NOT_FOUND";
+    leave update_this;
+  END IF;
+  IF NOT EXISTS (SELECT id from modules where id=p_module_id) THEN
+    set result = "MODULE_ID_NOT_FOUND";
+    leave update_this;
+  END IF;
   IF NOT EXISTS (SELECT * FROM sessions as s WHERE s.name = p_name and s.module_id = p_module_id and s.id <> p_id) THEN
     UPDATE sessions SET name=p_name, module_id=p_module_id WHERE id=p_id;
     COMMIT;
     SET result = 'SUCCESS';
   ELSE
-    set result = 'EXISTS';
+    set result = 'DUPLICATED';
   END IF;
 END$$
 DELIMITER ;
